@@ -39,12 +39,20 @@ namespace AirBnB_for_Campers___TAKE_HOME_EXAM.Controllers
         [HttpPost]
         public ActionResult Post([FromBody] User user)
         {
+            // Check if the email already exists
+            var existingUser = _data.getUsers().FirstOrDefault(u => u.Email == user.Email);
+            if (existingUser != null)
+            {
+                return Conflict("Email already exists");
+            }
+
             // Hash the password before storing
             user.HashedPassword = BCrypt.Net.BCrypt.HashPassword(user.HashedPassword);
             // Store user in the database
             _data.addUser(user);
             return Ok("User has been added!");
         }
+
 
 
 

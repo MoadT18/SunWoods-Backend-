@@ -18,7 +18,7 @@ namespace AirBnB_for_Campers___TAKE_HOME_EXAM.Controllers
         }
 
         [HttpGet]
-        public ActionResult<IEnumerable<Camping>> GetCampings(double? minPrice = null, double? maxPrice = null, string? availableFrom = null, string? availableTo = null)
+        public ActionResult<IEnumerable<Camping>> GetCampings(double? minPrice = null, double? maxPrice = null, string? availableFrom = null, string? availableTo = null, string? location = null)
         {
             // Fetch all campings
             var campings = _data.getCampings();
@@ -59,12 +59,17 @@ namespace AirBnB_for_Campers___TAKE_HOME_EXAM.Controllers
                     // Check if the camping's available period encompasses the requested date range
                     return fromDate >= campingFromDate && toDate <= campingToDate;
                 });
+            }
 
+            // Apply location filter if provided
+            if (!string.IsNullOrEmpty(location))
+            {
+                string[] locations = location.Split(',').Select(x => x.Trim()).ToArray();
+                campings = campings.Where(c => locations.Contains(c.Location));
             }
 
             return Ok(campings);
         }
-
 
 
 
